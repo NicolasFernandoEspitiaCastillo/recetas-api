@@ -1,90 +1,93 @@
-import express from "express";
-import { Receta } from "../models/Receta.js";
+// import express from "express";
+// import { Receta } from "../models/Receta.js";
 
-const router = express.Router();
+// const router = express.Router();
 
-// 📌 Crear receta
+// // Crear receta
 // router.post("/", async (req, res) => {
 //   try {
-//     const nuevaReceta = new Receta(req.body);
-//     await nuevaReceta.save();
-//     res.status(201).json(nuevaReceta);
+//     const { nombre, instrucciones, tiempoPreparacion, ingredientes } = req.body;
+
+//     // Validación previa antes de guardar
+//     if (!nombre || !instrucciones || !tiempoPreparacion || !ingredientes) {
+//       return res.status(400).json({ error: "Todos los campos son obligatorios" });
+//     }
+
+//     const nuevaReceta = new Receta({
+//       nombre,
+//       instrucciones,
+//       tiempoPreparacion,
+//       ingredientes
+//     });
+
+//     const recetaGuardada = await nuevaReceta.save();
+//     res.status(201).json(recetaGuardada);
+
 //   } catch (error) {
-//     res.status(400).json({ error: error.message });
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+// // 📌 Listar recetas
+// router.get("/", async (req, res) => {
+//   try {
+//     const recetas = await Receta.find();
+//     res.json(recetas);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
 //   }
 // });
 
-// Crear receta
-router.post("/", async (req, res) => {
-  try {
-    const { nombre, instrucciones, tiempoPreparacion, ingredientes } = req.body;
+// // 📌 Obtener receta por ID
+// router.get("/:id", async (req, res) => {
+//   try {
+//     const receta = await Receta.findById(req.params.id);
+//     if (!receta) return res.status(404).json({ error: "Receta no encontrada" });
+//     res.json(receta);
+//   } catch (error) {
+//     res.status(500).json({ error: "ID inválido o error en el servidor" });
+//   }
+// });
 
-    // Validación previa antes de guardar
-    if (!nombre || !instrucciones || !tiempoPreparacion || !ingredientes) {
-      return res.status(400).json({ error: "Todos los campos son obligatorios" });
-    }
+// // 📌 Actualizar receta
+// router.put("/:id", async (req, res) => {
+//   try {
+//     const recetaActualizada = await Receta.findByIdAndUpdate(req.params.id, req.body, { new: true });
+//     if (!recetaActualizada) return res.status(404).json({ error: "Receta no encontrada" });
+//     res.json(recetaActualizada);
+//   } catch (error) {
+//     res.status(500).json({ error: "ID inválido o error en el servidor" });
+//   }
+// });
 
-    const nuevaReceta = new Receta({
-      nombre,
-      instrucciones,
-      tiempoPreparacion,
-      ingredientes
-    });
+// // 📌 Eliminar receta
+// router.delete("/:id", async (req, res) => {
+//   try {
+//     const recetaEliminada = await Receta.findByIdAndDelete(req.params.id);
+//     if (!recetaEliminada) return res.status(404).json({ error: "Receta no encontrada" });
+//     res.json({ mensaje: "Receta eliminada correctamente" });
+//   } catch (error) {
+//     res.status(500).json({ error: "ID inválido o error en el servidor" });
+//   }
+// });
 
-    const recetaGuardada = await nuevaReceta.save();
-    res.status(201).json(recetaGuardada);
+// export default router;
 
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-// 📌 Listar recetas
-router.get("/", async (req, res) => {
-  try {
-    const recetas = await Receta.find();
-    res.json(recetas);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+import express from "express";
+import {
+  crearReceta,
+  listarRecetas,
+  obtenerRecetaPorId,
+  actualizarReceta,
+  eliminarReceta
+} from "../controllers/receta.controller.js";
 
-// 📌 Obtener receta por ID
-router.get("/:id", async (req, res) => {
-  try {
-    const receta = await Receta.findById(req.params.id);
-    if (!receta) return res.status(404).json({ error: "Receta no encontrada" });
-    res.json(receta);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+const router = express.Router();
 
-// 📌 Actualizar receta
-router.put("/:id", async (req, res) => {
-  try {
-    const recetaActualizada = await Receta.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!recetaActualizada) return res.status(404).json({ error: "Receta no encontrada" });
-    res.json(recetaActualizada);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// 📌 Eliminar receta
-router.delete("/:id", async (req, res) => {
-  try {
-    const recetaEliminada = await Receta.findByIdAndDelete(req.params.id);
-    if (!recetaEliminada) return res.status(404).json({ error: "Receta no encontrada" });
-    res.json({ mensaje: "Receta eliminada" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post("/", crearReceta);
+router.get("/", listarRecetas);
+router.get("/:id", obtenerRecetaPorId);
+router.put("/:id", actualizarReceta);
+router.delete("/:id", eliminarReceta);
 
 export default router;
-
 
